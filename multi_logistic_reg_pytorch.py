@@ -5,9 +5,8 @@ from dataloaders import CustomUnpickler
 ##this is multinomional logistic regression (optmized using cross entropy = maximum liklyhood)
 def evaluate(model,testX,testY):
   total_labels = torch.tensor(testY).size()[0]
-  _dots = lambda i : model(testX[i,:])
-  labels = sum(torch.equal(torch.tensor(testY[i]), torch.argmax(_dots(i))) for i in range(total_labels))
-  return labels/total_labels, labels
+  corret_labels = sum(torch.equal(torch.tensor(testY[i]), torch.argmax(model(testX[i,:]))) for i in range(total_labels))
+  return corret_labels/total_labels, corret_labels
 
 
 #for our size GPU slower than CPU -- but option available
@@ -26,7 +25,7 @@ model = linear = torch.nn.Linear(2001,20).double().to(device)
 
 loss_fn = torch.nn.CrossEntropyLoss().to(device)
 
-optimizer = optim.RMSprop(model.parameters(),lr=.05, weight_decay = 0.00001, momentum=0.05) ##this has weight decay just like you implemented
+optimizer = optim.RMSprop(model.parameters(), lr=.05, weight_decay = 0.00001, momentum=0.05) ##this has weight decay just like you implemented
 # optimizer = optim.SGD(model.parameters(), lr=0.1, momentum=0.9)
 
 epochs = 10000
